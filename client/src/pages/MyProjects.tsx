@@ -87,7 +87,7 @@ const MyProjects = () => {
                       <div className="flex items-center gap-3 text-white text-sm">
                         <button
                           onClick={() => navigate(`/preview/${project.id}`)}
-                          className="px-3 py-1.5 bg-white/10 hover:bg-white/15 transition-colors rounded-md"
+                          className="px-3 py-1.5 bg-white/10 hover:bg-white/15 transition-all rounded-md"
                         >
                           Preview
                         </button>
