@@ -1,18 +1,23 @@
-
-import { Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import Pricing from './pages/Pricing'
-import Projects from './pages/Projects'
-import MyProjects from './pages/MyProjects'
-import Preview from './pages/Preview'
-import Community from './pages/Community'
-import View from './pages/View'
-import Navbar from './components/Navbar'
+import { Route, Routes, useLocation } from "react-router-dom";
+import Home from "./pages/Home";
+import Pricing from "./pages/Pricing";
+import Projects from "./pages/Projects";
+import MyProjects from "./pages/MyProjects";
+import Preview from "./pages/Preview";
+import Community from "./pages/Community";
+import View from "./pages/View";
+import Navbar from "./components/Navbar";
 
 const App = () => {
+  const { pathname } = useLocation();
+
+  const hideNavbar =
+    (pathname.startsWith("/projects/") && pathname !== "/projects") ||
+    pathname.startsWith("/preview/") ||
+    pathname.startsWith("/view/");
   return (
-    <div className=''>
-      <Navbar />
+    <div className="">
+      {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
@@ -24,6 +29,6 @@ const App = () => {
         <Route path="/view/:projectId" element={<View />} />
       </Routes>
     </div>
-  )
-}
-export default App
+  );
+};
+export default App;
