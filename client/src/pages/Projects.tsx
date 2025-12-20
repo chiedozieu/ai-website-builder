@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { Project } from "../types";
 import {
@@ -17,7 +17,12 @@ import {
 import {
   dummyConversations,
   dummyProjects,
+  dummyVersion,
 } from "../assets/site-builder-assets/assets/assets";
+import Sidebar from "../components/Sidebar";
+import ProjectPreview, {
+  type ProjectPreviewRef,
+} from "../components/ProjectPreview";
 
 const Projects = () => {
   const { projectId } = useParams();
@@ -31,12 +36,18 @@ const Projects = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const previewRef = useRef<ProjectPreviewRef>(null);
+
   const fetchProjects = async () => {
     const project = dummyProjects.find((p) => p.id === projectId);
 
     setTimeout(() => {
       if (project) {
-        setProject({ ...project, conversation: dummyConversations });
+        setProject({
+          ...project,
+          conversation: dummyConversations,
+          versions: dummyVersion,
+        });
         setLoading(false);
         setIsGenerating(project.current_code ? false : true);
       }
@@ -143,11 +154,17 @@ const Projects = () => {
             <FullscreenIcon size={16} />
             Preview
           </Link>
-          <button onClick={downloadCode} className="bg-linear-to-br from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors">
+          <button
+            onClick={downloadCode}
+            className="bg-linear-to-br from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors"
+          >
             <ArrowBigDownDashIcon size={16} />
             Download
           </button>
-          <button onClick={togglePublish} className="bg-linear-to-br from-indigo-700 to-indigo-600 hover:from-indigo-600 hover:to-indigo-500 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors">
+          <button
+            onClick={togglePublish}
+            className="bg-linear-to-br from-indigo-700 to-indigo-600 hover:from-indigo-600 hover:to-indigo-500 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors"
+          >
             {project.isPublished ? <EyeOff size={16} /> : <Eye size={16} />}
             {project.isPublished ? "Unpublish" : "Publish"}
           </button>
@@ -155,8 +172,23 @@ const Projects = () => {
       </div>
 
       <div className="flex-1 flex overflow-auto">
-        <div className="">Sidebar</div>
-        <div className="flex-1 p-2 pl-0">Project Preview</div>
+        <div className="">
+          <Sidebar
+            isMenuOpen={isMenuOpen}
+            project={project}
+            setProject={(p) => setProject(p)}
+            isGenerating={isGenerating}
+            setIsGenerating={setIsGenerating}
+          />
+        </div>
+        <div className="flex-1 p-2 pl-0">
+          <ProjectPreview
+            ref={previewRef}
+            project={project}
+            isGenerating={isGenerating}
+            device={device}
+          />
+        </div>
       </div>
     </div>
   ) : (
